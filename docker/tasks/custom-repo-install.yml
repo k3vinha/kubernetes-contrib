@@ -3,7 +3,7 @@
   template: src=dockerrepo.repo.j2 dest=/etc/yum.repos.d/dockerrepo.repo
 
 - name: Install docker engine
-  yum: name={{ item }} state=latest
+  yum: name={{ item }} state=latest enablerepo=dockerrepo
   with_items:
     - "{{ docker_package_name }}"
   environment:
