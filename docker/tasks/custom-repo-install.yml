@@ -5,7 +5,7 @@
 - name: Install docker engine
   yum: name={{ item }} state=latest
   with_items:
-    - {{ docker_package_name }}
+    - "{{ docker_package_name }}"
   environment:
     http_proxy: "{{ http_proxy|default('') }}"
     https_proxy: "{{ https_proxy|default('') }}"
