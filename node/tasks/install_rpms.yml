@@ -1,9 +1,22 @@
 ---
+#- name: Install kubernetes distribution rpms
+#  yum: name={{ kube_rpm_url_base }}/{{ item }}-{{ kube_rpm_url_sufix }}
+#  with_items:
+#    - "{{ kube_node_rpms }}"
+#  environment:
+#    http_proxy: "{{ http_proxy|default('') }}"
+#    https_proxy: "{{ https_proxy|default('') }}"
+#    no_proxy: "{{ no_proxy|default('') }}"
+
+# Kubernetes 1.3.0 RPM has hard dependency on Docker 1.10, so use --nodeps to skip dependency checks
+# Ignore errors if Kubernetes client RPM is already installed
 - name: Install kubernetes distribution rpms
-  yum: name={{ kube_rpm_url_base }}/{{ item }}-{{ kube_rpm_url_sufix }}
+  command: rpm -ivh "{{ kube_rpm_url_base }}/{{ item }}-{{ kube_rpm_url_sufix }}" --nodeps
   with_items:
     - "{{ kube_node_rpms }}"
+  ignore_errors: yes
   environment:
     http_proxy: "{{ http_proxy|default('') }}"
     https_proxy: "{{ https_proxy|default('') }}"
     no_proxy: "{{ no_proxy|default('') }}"
+
