@@ -1,0 +1,24 @@
+---
+- name: Verify docker config dir exists
+  file: path={{ docker_config_dir }} state=directory
+  tags: install
+
+- name: Install docker-network.conf
+  template: src=docker-network.conf.j2 dest={{ docker_config_dir }}/docker-network.conf
+  notify:
+    - reload systemd
+  tags: configure
+
+- name: Determine if thinpool exists
+  stat: path=/dev/mapper/docker-thinpool
+  register: thin_pool_check
+  changed_when: false
+  always_run: yes
+  tags: configure
+
+- name: Install docker-storage.conf
+  template: src=docker-storage.conf.j2 dest={{ docker_config_dir }}/docker-storage.conf
+  notify:
+    - reload systemd
+  when: thin_pool_check.stat.exists
+  tags: configure

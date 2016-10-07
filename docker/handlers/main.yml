@@ -14,6 +14,7 @@
   notify:
     - docker graph driver
     - docker fix start on btrfs
+    - docker enable service
     - docker start service
 
 - name: stop docker
@@ -38,6 +39,9 @@
     regexp="^(OPTIONS=.*)(--selinux-enabled(?!=false)([^\s\"\']*))"
     replace="\1--selinux-enabled=false"
   when: docker_driver.stdout == 'btrfs'
+
+- name: docker enable service
+  service: name=docker state=started
 
 - name: docker start service
   service: name=docker state=started
