@@ -50,6 +50,7 @@
   - socat
   - tar
   - git
+  environment: "{{ proxy_env | default('') }}"
   when: (kube_source_type == "localBuild" or kube_source_type == "github-release") and (ansible_distribution == "Fedora" or ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
 
 # enable cpu and memory accounting for systemd services by default

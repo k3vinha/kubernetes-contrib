@@ -3,5 +3,6 @@
   args:
     name: kubernetes-node
     state: latest
+  environment: "{{ proxy_env | default('') }}"
   notify:
     - restart daemons

@@ -4,4 +4,5 @@
   args:
     name: "{{ docker_package_name }}"
     state: latest
+  environment: "{{ proxy_env | default('') }}"
   when: not is_atomic

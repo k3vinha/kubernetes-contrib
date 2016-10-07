@@ -4,6 +4,7 @@
     name: kubernetes-master
     state: latest
     enablerepo: "updates-testing"
+  environment: "{{ proxy_env | default('') }}"
   notify:
     - restart daemons
 
@@ -13,6 +14,7 @@
     name: kubernetes-node
     state: latest
     enablerepo: "updates-testing"
+  environment: "{{ proxy_env | default('') }}"
   notify:
     - restart daemons
   when: networking == 'opencontrail'

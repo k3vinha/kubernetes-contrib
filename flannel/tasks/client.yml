@@ -11,6 +11,7 @@
   args:
         name: flannel
         state: latest
+  environment: "{{ proxy_env | default('') }}"
   when: not is_atomic and flannel_source_type != "github-release"
 
 - set_fact: 

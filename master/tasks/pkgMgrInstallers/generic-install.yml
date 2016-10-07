@@ -3,6 +3,7 @@
   args:
     name: kubernetes-master
     state: latest
+  environment: "{{ proxy_env | default('') }}"
   notify:
     - restart daemons
 - name: Generic | Install kubernetes node
@@ -10,6 +11,7 @@
   args:
     name: kubernetes-node
     state: latest
+  environment: "{{ proxy_env | default('') }}"
   notify:
     - restart daemons
   when: networking == 'opencontrail'

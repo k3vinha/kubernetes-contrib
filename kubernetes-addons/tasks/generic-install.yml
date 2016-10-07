@@ -12,3 +12,4 @@
   args:
     name: "{{ pyyaml_name }}"
     state: latest
+  environment: "{{ proxy_env | default('') }}"

@@ -4,5 +4,6 @@
     name: kubernetes-node
     state: latest
     enablerepo: "updates-testing"
+  environment: "{{ proxy_env | default('') }}"
   notify:
     - restart daemons

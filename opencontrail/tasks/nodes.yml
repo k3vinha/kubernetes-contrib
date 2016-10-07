@@ -23,18 +23,21 @@
   args:
     name: python-pip
     state: latest
+  environment: "{{ proxy_env | default('') }}"
 
 - name: bridge-utils
   action: "{{ ansible_pkg_mgr }}"
   args:
     name: bridge-utils
     state: latest
+  environment: "{{ proxy_env | default('') }}"
 
 - name: ethtool
   action: "{{ ansible_pkg_mgr }}"
   args:
     name: ethtool
     state: latest
+  environment: "{{ proxy_env | default('') }}"
 
 - name: Install plugin
   pip: name=opencontrail-kubelet

@@ -8,3 +8,4 @@
   args:
     name: docker.io
     state: latest
+  environment: "{{ proxy_env | default('') }}"
