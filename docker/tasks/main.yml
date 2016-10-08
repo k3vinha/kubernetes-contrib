@@ -13,14 +13,25 @@
   include: install.yml
   tags: install
 
+#
+# systemd service configuration uses EnvironmentFile (docker and docker-network)
+# upstart service configuration sources docker_config_dir / docker
+#
 - set_fact:
-    docker_use_systemd_unit: ansible_distribution == "CentOS" and ansible_distribution_major_version|int >= 7
+    docker_use_upstart: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 15
 
-- include: systemd-unit.yml
-  when: docker_use_systemd_unit
+- include: upstart.yml
+  when: docker_use_upstart
 
-- include: systemd-unit.yml
-  when: not docker_use_systemd_unit
+- include: systemd.yml
+  when: not docker_use_upstart
+
+- name: Add any insecure registrys to docker config
+  lineinfile: dest={{ docker_config_dir }}/docker regexp=^INSECURE_REGISTRY= line=INSECURE_REGISTRY="{% for reg in insecure_registrys %}--insecure-registry={{ reg }} {% endfor %}"
+  when: insecure_registrys is defined and insecure_registrys > 0
+  notify:
+    - restart docker
+  tags: configure
 
 - name: Enable Docker
   service: name=docker enabled=yes

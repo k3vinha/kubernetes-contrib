@@ -1,0 +1,42 @@
+---
+- name: Local vars for systemd installs
+  set_fact:
+    docker_config_net: "{{ docker_config_dir }}/docker-network"
+    docker_env_export: ""
+
+- name: Verify docker config dir exists
+  file: path={{ docker_config_dir }} state=directory
+  tags: install
+
+- name: Verify docker service.d dir exists
+  file: path={{ docker_systemd_dir }} state=directory
+  tags: install
+
+- name: Configure docker EnvironmentFile settings
+  template: src=systemd/docker.j2 dest={{ docker_config }}/docker
+  notify:
+    - reload systemd
+    - restart docker
+  tags: configure
+
+- name: Configure docker network settings
+  template: src=systemd/docker-network.j2 dest={{ docker_config_net }}
+  notify:
+    - reload systemd
+    - restart docker
+  tags: configure
+
+- name: Determine if thinpool exists
+  stat: path=/dev/mapper/docker-thinpool
+  register: thin_pool_check
+  changed_when: false
+  always_run: yes
+  tags: configure
+
+- name: Install docker-storage
+  template: src=systemd/docker-storage.j2 dest={{ docker_config_dir }}/docker-storage
+  notify:
+    - reload systemd
+    - restart docker
+  when: thin_pool_check.stat.exists
+  tags: configure
