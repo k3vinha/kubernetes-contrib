@@ -1,9 +1,9 @@
 ---
-- name: Verify docker config dir exists
+- name: Create docker config dir exists
   file: path={{ docker_config_dir }} state=directory
   tags: install
 
-- name: Verify docker service.d dir exists
+- name: Create docker service.d dir exists
   file: path={{ docker_dropin_dir }} state=directory
   tags: install
 

@@ -1,6 +1,6 @@
 ---
-- stat: path={{ flannel_releases_dir }}/flannel-{{ flannel_version }}
-  register: st
+- name: Create flannel release dir
+  file: path={{ flannel_releases_dir }} state=directory
 
 - name: Download tar file
   get_url:
@@ -11,18 +11,16 @@
     http_proxy: "{{ http_proxy|default('') }}"
     https_proxy: "{{ https_proxy|default('') }}"
     no_proxy: "{{ no_proxy|default('') }}"
-  when: st.stat.isdir is not defined
 
 - name: Extract tar file
   unarchive:
-    src: "{{ ansible_temp_dir }}/flannel-{{ flannel_version }}-linux-amd64.tar.gz"
+    src: "{{ ansible_temp_dir }}/{{ flannel_download_file }}"
     dest: "{{ flannel_releases_dir }}"
     copy: no
-  when: st.stat.isdir is not defined
 
 - name: Create symlinks
   file:
-    src: "{{ flannel_releases_dir }}/flannel-{{ flannel_version }}/{{ item }}"
+    src: "{{ flannel_releases_dir }}/{{ item }}"
     dest: "{{ bin_dir }}/{{ item }}"
     state: link
     force: yes
