@@ -7,8 +7,8 @@
 - name: Install etcd via package manager
   action: "{{ ansible_pkg_mgr }}"
   args:
-        name: etcd
-        state: latest
+        name: etcd-{{ etcd_version }}
+        state: present
   environment: "{{ proxy_env | default('') }}"
   when: etcd_source_type == "package-manager"
 
