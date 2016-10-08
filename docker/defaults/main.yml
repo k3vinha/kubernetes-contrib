@@ -1,6 +1,6 @@
 no_proxy: "localhost,127.0.0.0/8,::1,/var/run/docker.sock"
 docker_config_dir: "/etc/sysconfig"
-docker_systemd_dir: "/etc/systemd/system/docker.service.d"
+docker_dropin_dir: "/etc/systemd/system/docker.service.d"
 
 # Set source of docker binaries
 # Available: package-manager, distribution-rpm, custom-repository

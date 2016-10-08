@@ -18,13 +18,14 @@
 # upstart service configuration sources docker_config_dir / docker
 #
 - set_fact:
-    docker_use_upstart: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 15
+    docker_use_upstart: "true"
+    when: ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int < 15
 
 - include: upstart.yml
-  when: docker_use_upstart
+  when: docker_use_upstart == "true"
 
 - include: systemd.yml
-  when: not docker_use_upstart
+  when: docker_use_upstart != "true"
 
 - name: Add any insecure registrys to docker config
   lineinfile: dest={{ docker_config_dir }}/docker regexp=^INSECURE_REGISTRY= line=INSECURE_REGISTRY="{% for reg in insecure_registrys %}--insecure-registry={{ reg }} {% endfor %}"

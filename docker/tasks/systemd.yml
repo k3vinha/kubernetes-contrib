@@ -1,26 +1,28 @@
 ---
-- name: Local vars for systemd installs
-  set_fact:
-    docker_config_net: "{{ docker_config_dir }}/docker-network"
-    docker_env_export: ""
-
 - name: Verify docker config dir exists
   file: path={{ docker_config_dir }} state=directory
   tags: install
 
 - name: Verify docker service.d dir exists
-  file: path={{ docker_systemd_dir }} state=directory
+  file: path={{ docker_dropin_dir }} state=directory
   tags: install
 
-- name: Configure docker EnvironmentFile settings
-  template: src=systemd/docker.j2 dest={{ docker_config }}/docker
+- name: Configure docker dropin
+  template: src=systemd/docker.conf.j2 dest={{ docker_dropin_dir }}/docker.conf
   notify:
     - reload systemd
     - restart docker
   tags: configure
 
-- name: Configure docker network settings
-  template: src=systemd/docker-network.j2 dest={{ docker_config_net }}
+- name: Configure docker EnvironmentFile
+  template: src=systemd/docker.j2 dest={{ docker_config_dir }}/docker
+  notify:
+    - reload systemd
+    - restart docker
+  tags: configure
+
+- name: Configure docker network docker EnvironmentFile
+  template: src=systemd/docker-network.j2 dest={{ docker_config_dir }}/docker-network
   notify:
     - reload systemd
     - restart docker
@@ -33,7 +35,7 @@
   always_run: yes
   tags: configure
 
-- name: Install docker-storage
+- name: Configure docker network docker storage EnvironmentFile
   template: src=systemd/docker-storage.j2 dest={{ docker_config_dir }}/docker-storage
   notify:
     - reload systemd
