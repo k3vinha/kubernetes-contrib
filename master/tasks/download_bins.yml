@@ -27,6 +27,9 @@
   with_items:
     - "{{ kube_binaries }}"
 
+- name: Allow kube-apiserver to bind to 443
+  command: setcap cap_net_bind_service+ep {{ kube_current_release_directory }}/kube-apiserver
+
 - name: Create symlinks
   file:
     src: "{{ kube_current_release_directory }}/{{ item }}"
